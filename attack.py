@@ -21,7 +21,7 @@ disable_warnings()
 def clear(): return system('cls')
 logger.remove()
 logger.add(stderr, format="<white>{time:HH:mm:ss}</white> | <level>{level: <8}</level> | <cyan>{line}</cyan> - <white>{message}</white>")
-threads = int(input('Количество потоков: '))
+threads = int(input('Кількість потоків: '))
 
 
 def mainth():
