@@ -13,6 +13,6 @@ GET PYTHON FROM python.org
 <br>
 FOR RUNNING THIS APP:
 1. pip install -r requirements.txt
-2. python app.py
+2. python attack.py
 3. For computer with 8CPUs and 16RAM good count of threads is 500.
 4. You can run many process of this app in different window, but the max size of processes for 8CPU is 4 
