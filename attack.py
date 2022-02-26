@@ -48,7 +48,7 @@ def mainth():
 		        for proxy in data['proxy']:
 		            auth = proxy["auth"]
 		            ip = proxy["ip"]
-		            scraper.proxies.update({'http': f'{ip}://{auth}', 'https': f'{ip}://{auth}'})
+		            scraper.proxies.update({'http': ip + "://" +auth, 'https': ip + "://" + auth})
 		            response = scraper.get(site)
 		            if response.status_code >= 200 and response.status_code <= 302:
 		                for i in range(MAX_REQUESTS):
