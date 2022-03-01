@@ -274,5 +274,5 @@ if __name__ == '__main__':
             terminal_additional += f"-t {' '.join(attacker.targets)} "
 
         for parts_threads in parts:
-            subprocess.call(f'start python attack_updated.py {parts_threads} {terminal_additional}', shell=True)
+            subprocess.call(f'start python attack.py {parts_threads} {terminal_additional}', shell=True)
         attacker_threading(first_part, attacker.mainth)
