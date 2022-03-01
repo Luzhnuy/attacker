@@ -252,7 +252,7 @@ def generation_process(part, terminal_add):
     if platform.system() == "Linux":
         if which('xterm') is None:
             os.system("sudo apt install xterm")
-        subprocess.call(f'xterm -e python attack.py {part} {terminal_add}', shell=True)
+        subprocess.call(f'xterm -e python attack.py {part} {terminal_add} &', shell=True)
     else:
         subprocess.call(f'start python attack.py {part} {terminal_add}', shell=True)
 
