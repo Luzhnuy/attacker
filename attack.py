@@ -20,6 +20,7 @@ from pyuseragents import random as random_useragent
 from requests.exceptions import ConnectionError
 from urllib3 import disable_warnings
 import subprocess
+from shutil import which
 
 statistic = {}
 work_statistic = True
@@ -247,6 +248,16 @@ def attacker_threading(threads_count, worker_func):
             logger.info(f"{status.upper()}: {site}")
 
 
+def generation_process(part, terminal_add):
+    if platform.system() == "Linux":
+        if which('xterm') is None:
+            os.system("sudo apt install xterm")
+        subprocess.call(f'xterm -e python attack.py {part} {terminal_add} &', shell=True)
+    else:
+        subprocess.call(f'start python attack.py {part} {terminal_add}', shell=True)
+
+
+
 if __name__ == '__main__':
     attacker = FuckYouRussianShip()
     if not attacker.no_clear:
@@ -262,7 +273,7 @@ if __name__ == '__main__':
         process_count = attacker.threads // 500
         parts = attacker.parts_recursive(attacker.threads)
         first_part = parts[0]
-        parts.pop(0)
+        del parts[0]
 
         terminal_additional = ''
 
@@ -274,5 +285,5 @@ if __name__ == '__main__':
             terminal_additional += f"-t {' '.join(attacker.targets)} "
 
         for parts_threads in parts:
-            subprocess.call(f'start python attack.py {parts_threads} {terminal_additional}', shell=True)
+            generation_process(parts_threads, terminal_additional)
         attacker_threading(first_part, attacker.mainth)
