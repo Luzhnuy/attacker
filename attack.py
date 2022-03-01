@@ -233,7 +233,7 @@ class FuckYouRussianShip:
                 tp.table(data=statistic_data,
                          headers=headers,
                          width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
-            sleep(1)
+            sleep(5)
             FuckYouRussianShip.clear()
 
     def parts_recursive(self, n, parts=[]):
@@ -250,8 +250,6 @@ def attacker_threading(threads_count, worker_func):
 
 def generation_process(part, terminal_add):
     if platform.system() == "Linux":
-        if which('xterm') is None:
-            os.system("sudo apt install xterm")
         subprocess.call(f'xterm -e python attack.py {part} {terminal_add} &', shell=True)
     else:
         subprocess.call(f'start python attack.py {part} {terminal_add}', shell=True)
@@ -260,6 +258,11 @@ def generation_process(part, terminal_add):
 
 if __name__ == '__main__':
     attacker = FuckYouRussianShip()
+
+    if platform.system() == "Linux":
+        if which('xterm') is None:
+            os.system("sudo apt install xterm")
+
     if not attacker.no_clear:
         attacker.clear()
     attacker.checkReq()
