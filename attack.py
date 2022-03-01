@@ -273,7 +273,7 @@ if __name__ == '__main__':
         process_count = attacker.threads // 500
         parts = attacker.parts_recursive(attacker.threads)
         first_part = parts[0]
-        parts.pop(0)
+        del parts[0]
 
         terminal_additional = ''
 
