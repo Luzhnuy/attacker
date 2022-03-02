@@ -1,26 +1,24 @@
 color 0A
 SETLOCAL EnableDelayedExpansion
 set workdir=%~dp0
-PATH=%PATH%;%workdir%;%USERPROFILE%\.platformio\penv\Scripts;
-echo off
+PATH=%PATH%;%workdir%;
 @chcp 1251>nul
-mode con: cols=88 lines=40
+mode con: cols=88 lines=20
 cls
-
+echo off
 :m1
-Echo  #----------------------------------------#-#-----------------------------------------# 
-Echo  *                  Commands              * *                  Команди                * 
-Echo  #----------------------------------------#-#-----------------------------------------# 
-Echo  *             Install tools              * *  Встановлення інструментів і середовища * 
-Echo  *  Install Python          (step 1)      *0*  Встановити Python            (Крок 1)  * 
-Echo  *  Install Git for Windows (step 2)      *2*  Встановити Git               (Крок 3)  * 
-Echo  *  Get attacker repository (step 3)      *3*  Отримати attacker            (Крок 4)  *
-Echo  #----------------------------------------#-#-----------------------------------------# 
-
+Echo  #-----------------------------------------#-----------------------------------------# 
+Echo  *                  Commands               *                  Команди                *
+Echo  #-----------------------------------------#-----------------------------------------#
+Echo  *             Install tools               *  Встановлення інструментів і середовища *
+Echo  *  Install Python          (step 1)     1 *  Встановити Python            (Крок 1)  *
+Echo  *  Install Git for Windows (step 2)     2 *  Встановити Git               (Крок 3)  *
+Echo  *  Get attacker repository (step 3)     3 *  Отримати attacker            (Крок 4)  *
+Echo  #-----------------------------------------#-----------------------------------------# 
 Echo.
 Set /p choice="Your choice (Ваш вибір): "
 
-if "%choice%"=="0" (
+if "%choice%"=="1" (
 	if not exist "%systemdrive%\Program Files (x86)" (
 		%workdir%\resources\wget https://www.python.org/ftp/python/3.8.7/python-3.8.7.exe -O "%TMP%\python.exe"
 	) else (
@@ -46,7 +44,7 @@ if "%choice%"=="0" (
 )
 
 
-if "%choice%"=="1" (
+if "%choice%"=="2" (
 	if not exist "%systemdrive%\Program Files (x86)" (
 		%workdir%\resources\wget https://github.com/git-for-windows/git/releases/download/v2.30.0.windows.2/Git-2.30.0.2-32-bit.exe -O %TMP%\git.exe
 	) else (
@@ -57,7 +55,7 @@ if "%choice%"=="1" (
 	del %TMP%\git.exe
 )
 
-if "%choice%"=="2" (
+if "%choice%"=="3" (
 	Set /p diskInstal="Enter a drive letter C,D etc. (Введите букву диска C,D и т.п): "
 	rem echo  test !%diskInstal!
 	if not exist "!diskInstal!:\" (
@@ -77,7 +75,7 @@ if "%choice%"=="2" (
 )
 
 
-Echo.
 pause
+
 cls
 goto m1
