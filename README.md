@@ -14,8 +14,13 @@ GET PYTHON FROM python.org
 FOR RUNNING THIS APP:
 1. pip install -r requirements.txt
 2. python attack.py
-3. For computer with 8CPUs and 16RAM good count of threads is 500.
-4. You can run many process of this app in different window, but the max size of processes for 8CPU is 4 
+3You can run many process of this app in different window, but the max size of processes for 8CPU is 4 
+
+Встановити докєр можна так - https://ravesli.com/ustanovka-docker-v-windows/
+# Для людей які мають встановлений docker або docker desktop
+1. sudo docker pull lvinni/russian-warship-go-fuckyourself
+2. sudo docker run lvinni/russian-warship-go-fuckyourself
+
 
 ## Для людей, не дуже обізнаних в інформатиці, користувачів Windows 7-11
 1. Скачайте архів https://drive.google.com/file/d/1aQR53fcbvkGY-bY0V4YhzLY6obh8H6Ln/view?usp=sharing
