@@ -19,3 +19,4 @@ uuid==1.30
 wcwidth==0.2.5
 win32-setctime==1.1.0
 wincertstore==0.2
+pympler==1.0.1
