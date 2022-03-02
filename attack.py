@@ -106,10 +106,10 @@ class FuckYouRussianShip:
                     exit()
             else:
                 sleep(5)
-                self.checkUpdate()
+                # self.checkUpdate()
         except:
             sleep(5)
-            self.checkUpdate()
+            # self.checkUpdate()
 
     def mainth(self):
         global threads_count
@@ -165,7 +165,6 @@ class FuckYouRussianShip:
 
             log_file_name = site.replace('https://', '') \
                 .replace('http://', '').split('.')[0]
-
 
             try:
                 attack = scraper.get(site, timeout=10)
@@ -247,6 +246,7 @@ class FuckYouRussianShip:
                          width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
             sleep(5)
             FuckYouRussianShip.clear()
+
     def parts_recursive(self, n, parts=[]):
         return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
 
@@ -286,11 +286,6 @@ def start_multi_terminals(parts_list, terminal_add, f_part, func_att):
 
 if __name__ == '__main__':
     attacker = FuckYouRussianShip()
-
-    if platform.system() == "Linux":
-        if which('xterm') is None:
-            os.system("sudo apt install xterm")
-
     if not attacker.no_clear:
         attacker.clear()
     attacker.checkReq()
@@ -300,7 +295,6 @@ if __name__ == '__main__':
     attack_func = attacker.mainth
     Thread(target=attacker.cleaner, daemon=True).start()
     Thread(target=attacker.print_statistic, daemon=True).start()
-    # Thread(target=regenerate_threading, daemon=True).start()
 
     if attacker.threads <= 500:
         attacker_threading(attacker.threads, attacker.mainth)
