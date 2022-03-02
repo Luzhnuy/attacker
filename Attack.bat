@@ -8,7 +8,7 @@ if exist "%USERPROFILE%\Python\python.exe" (
 )
 PATH=%PATH%;%workdir%;%PYTHONPATH%;%ProgramFiles%\Git;%ProgramFiles%\Git\bin
 @chcp 1251>nul
-mode con: cols=110 lines=20
+mode con: cols=140 lines=20
 cls 
 
 "%ProgramFiles%\Git\bin\git" checkout master
