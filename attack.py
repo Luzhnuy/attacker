@@ -285,32 +285,33 @@ def start_multi_terminals(parts_list, terminal_add, f_part, func_att):
 
 
 if __name__ == '__main__':
-    attacker = FuckYouRussianShip()
-    if not attacker.no_clear:
-        attacker.clear()
-    attacker.checkReq()
-    # attacker.checkUpdate()
+    while True:
+        attacker = FuckYouRussianShip()
+        if not attacker.no_clear:
+            attacker.clear()
+        attacker.checkReq()
+        # attacker.checkUpdate()
 
-    thread_count = attacker.threads
-    attack_func = attacker.mainth
-    Thread(target=attacker.cleaner, daemon=True).start()
-    Thread(target=attacker.print_statistic, daemon=True).start()
+        thread_count = attacker.threads
+        attack_func = attacker.mainth
+        Thread(target=attacker.cleaner, daemon=True).start()
+        Thread(target=attacker.print_statistic, daemon=True).start()
 
-    if attacker.threads <= 500:
-        attacker_threading(attacker.threads, attacker.mainth)
-    else:
-        process_count = attacker.threads // 500
-        parts = attacker.parts_recursive(attacker.threads)
-        first_part = parts[0]
-        del parts[0]
+        if attacker.threads <= 500:
+            attacker_threading(attacker.threads, attacker.mainth)
+        else:
+            process_count = attacker.threads // 500
+            parts = attacker.parts_recursive(attacker.threads)
+            first_part = parts[0]
+            del parts[0]
 
-        terminal_additional = ''
+            terminal_additional = ''
 
-        if attacker.no_clear:
-            terminal_additional += "-n "
-        if attacker.proxy_view:
-            terminal_additional += "-p "
-        if attacker.targets:
-            terminal_additional += f"-t {' '.join(attacker.targets)} "
+            if attacker.no_clear:
+                terminal_additional += "-n "
+            if attacker.proxy_view:
+                terminal_additional += "-p "
+            if attacker.targets:
+                terminal_additional += f"-t {' '.join(attacker.targets)} "
 
-        start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
+            start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
