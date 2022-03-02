@@ -247,7 +247,6 @@ class FuckYouRussianShip:
                          width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
             sleep(5)
             FuckYouRussianShip.clear()
-
     def parts_recursive(self, n, parts=[]):
         return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
 
@@ -264,7 +263,12 @@ def attacker_threading(threads_count, worker_func):
     with ThreadPoolExecutor(max_workers=threads_count) as executor:
         future_tasks = [executor.submit(worker_func) for _ in range(threads_count)]
         for task in as_completed(future_tasks):
-            status, site = task.result()
+            while True:
+                try:
+                    status, site = task.result()
+                    break
+                except BaseException:
+                    sleep(5)
 
 
 def generation_process(part, terminal_add):
@@ -272,6 +276,12 @@ def generation_process(part, terminal_add):
         subprocess.call(f'xterm -e python attack.py {part} {terminal_add} &', shell=True)
     else:
         subprocess.call(f'start python attack.py {part} {terminal_add}', shell=True)
+
+
+def start_multi_terminals(parts_list, terminal_add, f_part, func_att):
+    for part in parts_list:
+        generation_process(part, terminal_add)
+    attacker_threading(f_part, func_att)
 
 
 if __name__ == '__main__':
@@ -309,6 +319,4 @@ if __name__ == '__main__':
         if attacker.targets:
             terminal_additional += f"-t {' '.join(attacker.targets)} "
 
-        for parts_threads in parts:
-            generation_process(parts_threads, terminal_additional)
-        attacker_threading(first_part, attacker.mainth)
+        start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
