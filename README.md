@@ -57,13 +57,13 @@
 - Зтягуємо докер імейдж:
 
   ```shell
-  docker pull lvinni/russian-warship-go-fuckyourself
+  docker pull ghcr.io/luzhnuy/attacker:latest
   ```
 
-- Запускаємо контейнер:
+- Запускаємо контейнер для 500 тредів:
 
   ```shell
-  docker run --rm lvinni/russian-warship-go-fuckyourself
+  docker run --rm ghcr.io/luzhnuy/attacker:latest 500
   ```
 
 ### Docker Compose
