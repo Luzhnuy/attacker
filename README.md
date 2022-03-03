@@ -19,10 +19,26 @@
 
 Встановити докєр можна так - https://ravesli.com/ustanovka-docker-v-windows/
 
-1. sudo docker pull lvinni/russian-warship-go-fuckyourself
-2. sudo docker run lvinni/russian-warship-go-fuckyourself
-   <br>
-   <br>
+Зтягнути докер імейдж:
+
+```shell
+docker pull lvinni/russian-warship-go-fuckyourself
+```
+
+Запустити контейнер:
+
+```shell
+docker run --rm lvinni/russian-warship-go-fuckyourself
+```
+
+**Опціонально**: 
+
+Якщо у вас є бажання зібрати контейнер локально з [Dockerfile](./Dockerfile) та запустити, скористайтесь наступною командою:
+
+```shell
+docker-compose up --build --scale attacker=2
+```
+Де `--scale attacker=2` – кількість паралельно запущених контейнерів.
 
 ## Для людей, не дуже обізнаних в інформатиці, користувачів Windows 7-11
 
@@ -73,8 +89,26 @@ FOR RUNNING THIS APP:
 # For people who have a docker or desktop docker installed
 You can install a docker like this - https://ravesli.com/ustanovka-docker-v-windows/
 
-1. sudo docker pull lvinni / russian-warship-go-fuckyourself
-2. sudo docker run lvinni / russian-warship-go-fuckyourself
+Download docker image:
+
+```shell
+docker pull lvinni/russian-warship-go-fuckyourself
+```
+
+Launch container:
+
+```shell
+docker run --rm lvinni/russian-warship-go-fuckyourself
+```
+
+**Optional:**
+
+If you want to build the container locally from [Dockerfile](./Dockerfile) and run it, use the following command:
+
+```shell
+docker-compose up --build --scale attacker=2
+```
+Where `--scale attacker=2` - the number of containers running simultaneously.
 
 ## For people who are not very familiar with computer science, users of Windows 7-11
 
