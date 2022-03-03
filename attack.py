@@ -331,3 +331,4 @@ if __name__ == '__main__':
                 terminal_additional += f"-t {' '.join(attacker.targets)} "
 
             start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
+
