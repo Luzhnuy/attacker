@@ -6,9 +6,10 @@ on:
       - master # Master branch will always be tagged as `image:latest`.
     tags:
       - v** # All `v*` tags will be applied to image. Git tag `v1.0` will create/update `image:1.0` image tag.
+    # Build and push image only when .py files was changed or Dockerfile itself.
     paths:
-      - '**.py' # Build and push image only when .py files was changed.
-
+      - 'Dockerfile'
+      - '**.py'
 env:
   IMAGE_NAME: attacker # Needs to be equal to repository name for ghcr registry.
 
