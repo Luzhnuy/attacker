@@ -1,0 +1,39 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - master # Master branch will always be tagged as `image:latest`.
+    tags:
+      - v** # All `v*` tags will be applied to image. Git tag `v1.0` will create/update `image:1.0` image tag.
+    paths:
+      - '**.py' # Build and push image only when .py files was changed.
+
+env:
+  IMAGE_NAME: attacker # Needs to be equal to repository name for ghcr registry.
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Log in to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Build and push image
+      run: |
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+        # Change all uppercase to lowercase.
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        # Strip git ref prefix from version.
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        # Strip "v" prefix from tag name.
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+        # Use Docker `latest` tag convention.
+        [ "$VERSION" == "master" ] && VERSION=latest
+        # Print information.
+        echo IMAGE_ID=$IMAGE_ID
+        echo VERSION=$VERSION
+        # Build and push
+        docker build . --file Dockerfile --tag $IMAGE_NAME
+        docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+        docker push $IMAGE_ID:$VERSION
