@@ -16,7 +16,7 @@
 - Ставимо [Python 3.8](https://python.org) або новіший ([інструкція](https://python-scripts.com/install-python-windows))
   > ⚠ Обов'язково ставимо галочку навпроти `Add Python to PATH` ([скрін](http://wind10.ru/wp-content/uploads/2020/02/pp_image_4620_v0cz5agbht0001_add_Python_to_Path.png))
 
-- Зтягуэмо репу:
+- Зтягуємо репу:
   ```shell
   git clone https://github.com/Luzhnuy/attacker.git
   ```
@@ -33,7 +33,7 @@
 - Ставимо [Python 3.8](https://python.org) або новіший
   > ⚠ В Linux ваша система може мати попередньо встановлений Python версії 2, і це означає, що вам потрібно запустити цю програму за допомогою команди `python3` і встановити вимоги до встановлення за допомогою команди `pip3`
 
-- Зтягуэмо репу:
+- Зтягуємо репу:
   ```shell
   git clone https://github.com/Luzhnuy/attacker.git
   ```
@@ -57,20 +57,20 @@
 - Зтягуємо докер імейдж:
 
   ```shell
-  docker pull lvinni/russian-warship-go-fuckyourself
+  docker pull ghcr.io/luzhnuy/attacker:latest
   ```
 
-- Запускаємо контейнер:
+- Запускаємо контейнер для 500 тредів:
 
   ```shell
-  docker run --rm lvinni/russian-warship-go-fuckyourself
+  docker run --rm ghcr.io/luzhnuy/attacker:latest 500
   ```
 
 ### Docker Compose
 
 `docker-compose` дозволяє легко запускати контейнери параллельно без необхідності тримати відкритими декілька терминалів. Для запуску на серверах - саме те що треба.
 
-- Зтягуэмо репу:
+- Зтягуємо репу:
 
   ```shell
   git clone https://github.com/Luzhnuy/attacker.git

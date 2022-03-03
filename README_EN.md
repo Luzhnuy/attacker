@@ -59,13 +59,13 @@
 - Download docker image:
 
   ```shell
-  docker pull lvinni/russian-warship-go-fuckyourself
+  docker pull ghcr.io/luzhnuy/attacker:latest
   ```
 
-- Launch the container:
+- Launch the container for the 500 threads:
 
   ```shell
-  docker run --rm lvinni/russian-warship-go-fuckyourself
+  docker run --rm ghcr.io/luzhnuy/attacker:latest 500
   ```
 
 ### Docker Compose
