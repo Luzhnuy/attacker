@@ -5,3 +5,5 @@ services:
   attacker:
     build: .
     restart: always
+    ports:
+      - "80:80"

@@ -3,5 +3,6 @@ RUN apt-get update
 WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install Flask twilio
 COPY . .
-ENTRYPOINT [ "python", "attack.py"]
+ENTRYPOINT [ "bash", "run.sh"]
