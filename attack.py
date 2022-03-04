@@ -206,13 +206,13 @@ class FuckYouRussianShip:
 
                         if 200 <= response.status_code <= 302:
                             self.write_statistic_success(site, response.status_code)
-                            for i in range(self.MAX_REQUESTS):
+                            for _ in range(self.MAX_REQUESTS):
                                 response = scraper.get(site, timeout=10)
                                 self.write_statistic_success(site, response.status_code)
                                 del response
                         del response
                 else:
-                    for i in range(self.MAX_REQUESTS):
+                    for _ in range(self.MAX_REQUESTS):
                         response = scraper.get(site, timeout=10)
                         self.write_statistic_success(site, response.status_code)
                         del response
