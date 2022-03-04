@@ -6,8 +6,8 @@
 
 ## 🤔 Overview
 
-- The repo contains [Python 3](https://python.org) [script](./attack.py), which uses russian proxies and retrieves list of sites to attack from our API which scanning bastards websites.
-- ⚠ The script uses a proxy, but be careful, it is desirable to protect yourself with a VPN.
+- The repo contains [Python 3](https://python.org) script, which uses russian proxies and do load testing of web resources using API.
+- ⚠ The script uses a proxy, but be careful, it is desirable to use a VPN.
 
 ## 🚀 Quick start
 
@@ -98,10 +98,10 @@
    
    Click on it using right-click, select `Start as Administrator`.
 
-4. Follow step by step everything you see in the black window (press the number of the corresponding item, press Enter, allow programs to be installed, at the end select the next item.
-   <i> For example "Install python (step1)" - You need to enter the number 1 and press enter </i>
+4. Follow step by step everything you see in the black window (press the number of the corresponding item, press <kbd>Enter</kbd>, allow programs to be installed, at the end select the next item.
+   <i> For example "Install python (step1)" - You need to enter the number `1` and press <kbd>Enter</kbd></i>
 
-5. When the process of installing everything you need is complete, a wizard will open in which you can run the Attack.bat file (maybe just Attack).
+5. When the process of installing everything you need is complete, a wizard will open in which you can run the `Attack.bat` file (maybe just Attack).
 
 In the future, you no longer need to run install, just start `attack.bat` to get started. You also don't need to check for updates, this process happens automatically.
 
