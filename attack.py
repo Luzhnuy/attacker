@@ -105,8 +105,7 @@ class FuckYouRussianShip:
 
     def check_update(self):
         logger.info("Checking Updates...")
-        update_scraper = cloudscraper.create_scraper(
-            browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}, )
+        update_scraper = self.create_cloudscrape_scraper()
         url = (
             "https://gist.githubusercontent.com/AlexTrushkovsky/041d6e2ee27472a69abcb1b2bf90ed4d/raw/nowarversion.json"
         )
