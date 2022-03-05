@@ -4,7 +4,7 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
-ENTRYPOINT [ "python", "attack_docker.py", "-t http://nlmk.com"]
+ENTRYPOINT [ "python", "attack_docker.py"]
 
 # If you need add target
 #ENTRYPOINT [ "python", "attack_docker.py", "-t http://nlmk.com"]
