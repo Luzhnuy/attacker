@@ -52,7 +52,8 @@ class FuckYouRussianShip:
         self.proxy_view = self.args.proxy_view
         self.use_gc = self.args.use_gc
 
-        self.targets = os.environ.get('TARGETS').split(',') if os.environ.get('TARGETS') is not None else self.args.targets
+        os.environ["TERM"] = "xterm-color"
+        self.targets = self.args.targets
         self.threads = int(self.args.threads)
 
         try:
@@ -250,32 +251,34 @@ class FuckYouRussianShip:
                 self.clear()
             collect()
 
-    @staticmethod
-    def print_statistic():
+    def print_statistic(self):
         FuckYouRussianShip.clear()
         while True:
             if len(statistic.keys()):
-                print(f"Attack in processing... Success: {general_statistics[0]} | Errors: {general_statistics[1]}")
-                headers = ['Url',
-                           '1-- status',
-                           '2-- status',
-                           '3-- status',
-                           '4-- status',
-                           '5-- status',
-                           'Errors']
-                statistic_data = list(statistic.values())
-                statistic_data.append([
-                    'Successful Requests',
-                    general_statistics[0],
-                    'Threads',
-                    threads_count,
-                    '',
-                    'Errors',
-                    general_statistics[1]
-                ])
-                tp.table(data=statistic_data,
-                         headers=headers,
-                         width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
+                if self.targets:
+                    print(f"Attack to {self.targets[0]} in processing... Success requests: {general_statistics[0]} | Errors: {general_statistics[1]}")
+                else:
+                    headers = ['Url',
+                               '1-- status',
+                               '2-- status',
+                               '3-- status',
+                               '4-- status',
+                               '5-- status',
+                               'Errors']
+                    statistic_data = list(statistic.values())
+                    statistic_data = list(filter(lambda l: l if l[2] else False, statistic_data))
+                    statistic_data.append([
+                        'Successful Requests',
+                        general_statistics[0],
+                        'Threads',
+                        threads_count,
+                        '',
+                        'Errors',
+                        general_statistics[1]
+                    ])
+                    tp.table(data=statistic_data,
+                             headers=headers,
+                             width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
             sleep(5)
             FuckYouRussianShip.clear()
 
