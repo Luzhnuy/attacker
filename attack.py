@@ -70,7 +70,7 @@ class FuckYouRussianShip:
 
     @staticmethod
     def clear():
-        if platform.system() == "Linux":
+        if platform.system() == "Linux" or platform.system() == "Darwin":
             return system('clear')
         else:
             return system('cls')
