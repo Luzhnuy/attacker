@@ -156,7 +156,7 @@ class FuckYouRussianShip:
             host = choice(self.HOSTS)
             try:
                 content = scraper.get(host).content
-            except BaseException:
+            except Exception:
                 sleep(5)
                 continue
 
@@ -176,7 +176,7 @@ class FuckYouRussianShip:
 
             try:
                 site = unquote(choice(self.targets) if self.targets else data['site']['page'])
-            except BaseException:
+            except Exception:
                 sleep(5)
                 continue
             if not site.startswith('http'):
