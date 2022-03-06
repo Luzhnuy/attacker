@@ -81,8 +81,8 @@ class FuckYouRussianShip:
     @staticmethod
     def create_parser():
         defaults = {
-            'threads': int(os.getenv('ATTACKER_THREADS')) if os.getenv('ATTACKER_THREADS') else 500,
-            'targets': [os.getenv('ATTACKER_TARGET')] if os.getenv('ATTACKER_TARGET') else []
+            'threads': 500 if not os.getenv('ATTACKER_THREADS') else int(os.getenv('ATTACKER_THREADS')),
+            'targets': [] if not os.getenv('ATTACKER_TARGET') else [os.getenv('ATTACKER_TARGET')]
         }
 
         parser_obj = ArgumentParser()
