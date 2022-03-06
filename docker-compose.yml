@@ -5,3 +5,6 @@ services:
   attacker:
     build: .
     restart: always
+    environment:
+      ATTACKER_THREADS: 500
+      #ATTACKER_TARGET: https://kremlin.ru # Target one certain domain.
