@@ -80,11 +80,16 @@ class FuckYouRussianShip:
 
     @staticmethod
     def create_parser():
+        defaults = {
+            'threads': int(os.getenv('ATTACKER_THREADS')) if os.getenv('ATTACKER_THREADS') else 500,
+            'targets': [os.getenv('ATTACKER_TARGET')] if os.getenv('ATTACKER_TARGET') else []
+        }
+
         parser_obj = ArgumentParser()
-        parser_obj.add_argument('threads', nargs='?', default=500)
+        parser_obj.add_argument('threads', nargs='?', default=defaults['threads'])
         parser_obj.add_argument("-n", "--no-clear", dest="no_clear", action='store_true')
         parser_obj.add_argument("-p", "--proxy-view", dest="proxy_view", action='store_true')
-        parser_obj.add_argument("-t", "--targets", dest="targets", nargs='+', default=[])
+        parser_obj.add_argument("-t", "--targets", dest="targets", nargs='+', default=defaults['targets'])
         parser_obj.set_defaults(verbose=False)
         parser_obj.add_argument("-lo", "--logger-output", dest="logger_output")
         parser_obj.add_argument("-lr", "--logger-results", dest="logger_results")
