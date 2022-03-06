@@ -68,6 +68,11 @@
   docker run --rm ghcr.io/luzhnuy/attacker:latest 500
   ```
 
+#### Docker environment variables list
+
+- `ATTACKER_THREADS`: Defines the number of threads used in the script.
+- `ATTACKER_TARGET`: Defines target site that will be used as a single target instead of a dynamic list of sites retrieved by API.
+
 ### Docker Compose
 
 `docker-compose` allows you to easily run containers in parallel without having to keep multiple terminals opened. To run on servers - perfect choice.
