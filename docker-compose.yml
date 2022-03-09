@@ -6,5 +6,10 @@ services:
     build: .
     restart: always
     environment:
+      # Defines the number of threads used in the script.
       ATTACKER_THREADS: 500
-      #ATTACKER_TARGET: https://kremlin.ru # Target one certain domain.
+
+      # Defines target sites that will be used instead of a dynamic list of
+      # sites retrieved by API.
+      # NOTE: JSON should be valid.
+      #ATTACKER_TARGETS: '["https://kremlin.ru", "https://sberbank.com"]'
