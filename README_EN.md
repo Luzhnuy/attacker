@@ -70,8 +70,8 @@
 
 #### Docker environment variables list
 
-- `ATTACKER_THREADS`: Defines the number of threads used in the script.
-- `ATTACKER_TARGET`: Defines target site that will be used as a single target instead of a dynamic list of sites retrieved by API.
+- `ATTACKER_THREADS`: _(integer)_ Defines the number of threads used in the script.
+- `ATTACKER_TARGET`: _(JSON array with URLs)_ Defines target sites that will be used as a targets instead of a dynamic list of sites retrieved by API.
 
 ### Docker Compose
 

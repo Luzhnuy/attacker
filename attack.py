@@ -82,7 +82,7 @@ class FuckYouRussianShip:
     def create_parser():
         defaults = {
             'threads': 500 if not os.getenv('ATTACKER_THREADS') else int(os.getenv('ATTACKER_THREADS')),
-            'targets': [] if not os.getenv('ATTACKER_TARGET') else [os.getenv('ATTACKER_TARGET')]
+            'targets': [] if not os.getenv('ATTACKER_TARGETS') else json.loads(os.getenv('ATTACKER_TARGETS'))
         }
 
         parser_obj = ArgumentParser()
