@@ -101,32 +101,6 @@ class FuckYouRussianShip:
         parser_obj.set_defaults(logger_results=stderr)
         return parser_obj
 
-    def check_update(self):
-        logger.info("Checking Updates...")
-        update_scraper = self.create_cloudscrape_scraper()
-        url = (
-            "https://gist.githubusercontent.com/AlexTrushkovsky/041d6e2ee27472a69abcb1b2bf90ed4d/raw/nowarversion.json"
-        )
-
-        try:
-            content = update_scraper.get(url).content
-            if content:
-                data = json.loads(content)
-                new_version = data["version"]
-                logger.info("Version: ", new_version)
-                if int(new_version) > int(self.VERSION):
-                    logger.info("New version Available")
-                    os.system("python updater.py " + str(self.threads))
-                    os.system("python3 updater.py " + str(self.threads))
-                    exit()
-            else:
-                sleep(5)
-                # self.check_update()
-            del content
-        except Exception:
-            sleep(5)
-            # self.check_update()
-
     @staticmethod
     def create_cloudscrape_scraper():
         return cloudscraper.create_scraper(
@@ -242,7 +216,6 @@ class FuckYouRussianShip:
     def cleaner(self):
         while True:
             sleep(60)
-            # self.check_update()
 
             if not self.no_clear:
                 self.clear()
