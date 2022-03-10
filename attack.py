@@ -102,29 +102,31 @@ class FuckYouRussianShip:
         return parser_obj
 
     @staticmethod
-    def create_cloudscrape_scraper():
-        return cloudscraper.create_scraper(
-            browser={'browser': 'firefox', 'platform': 'android', 'mobile': True}
-        )
+    def init_scraper():
+        new_scraper = cloudscraper.create_scraper(browser={
+            'browser': 'firefox',
+            'platform': 'android',
+            'mobile': True
+        })
+        new_scraper.headers.update({
+            'Content-Type': 'application/json',
+            'cf-visitor': 'https',
+            'User-Agent': random_useragent(),
+            'Connection': 'keep-alive',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'ru',
+            'x-forwarded-proto': 'https',
+            'Accept-Encoding': 'gzip, deflate, br'
+        })
+        return new_scraper
 
     def mainth(self):
         global threads_count
         threads_count += 1
-        scraper = self.create_cloudscrape_scraper()
-        scraper.headers.update(
-            {'Content-Type': 'application/json', 'cf-visitor': 'https', 'User-Agent': random_useragent(),
-             'Connection': 'keep-alive',
-             'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'ru', 'x-forwarded-proto': 'https',
-             'Accept-Encoding': 'gzip, deflate, br'})
 
         # log_file_main = 'main'
         while True:
-            scraper = self.create_cloudscrape_scraper()
-            scraper.headers.update(
-                {'Content-Type': 'application/json', 'cf-visitor': 'https', 'User-Agent': random_useragent(),
-                 'Connection': 'keep-alive',
-                 'Accept': 'application/json, text/plain, */*', 'Accept-Language': 'ru', 'x-forwarded-proto': 'https',
-                 'Accept-Encoding': 'gzip, deflate, br'})
+            scraper = self.init_scraper()
             host = choice(self.HOSTS)
             try:
                 content = scraper.get(host).content
