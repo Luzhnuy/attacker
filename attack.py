@@ -101,13 +101,6 @@ class FuckYouRussianShip:
         parser_obj.set_defaults(logger_results=stderr)
         return parser_obj
 
-    @staticmethod
-    def check_req():
-        os.system("python3 -m pip install -r requirements.txt")
-        os.system("python -m pip install -r requirements.txt")
-        os.system("pip install -r requirements.txt")
-        os.system("pip3 install -r requirements.txt")
-
     def check_update(self):
         logger.info("Checking Updates...")
         update_scraper = self.create_cloudscrape_scraper()
@@ -321,7 +314,6 @@ if __name__ == '__main__':
         attacker = FuckYouRussianShip()
         if not attacker.no_clear:
             attacker.clear()
-        attacker.check_req()
 
         thread_count = attacker.threads
         attack_func = attacker.mainth
