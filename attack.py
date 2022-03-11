@@ -44,8 +44,7 @@ class FuckYouRussianShip:
 
     def __init__(self):
         disable_warnings()
-        parser = self.create_parser()
-        self.args, self.unknown = parser.parse_known_args()
+        self.args = self.parse_arguments()
         self.no_clear = self.args.no_clear
         self.proxy_view = self.args.proxy_view
         self.use_gc = self.args.use_gc
@@ -69,27 +68,27 @@ class FuckYouRussianShip:
             return system('cls')
 
     @staticmethod
-    def create_parser():
+    def parse_arguments():
         defaults = {
             'threads': 500 if not os.getenv('ATTACKER_THREADS') else int(os.getenv('ATTACKER_THREADS')),
             'targets': [] if not os.getenv('ATTACKER_TARGETS') else json.loads(os.getenv('ATTACKER_TARGETS'))
         }
 
-        parser_obj = ArgumentParser()
-        parser_obj.add_argument('threads', nargs='?', default=defaults['threads'])
-        parser_obj.add_argument("-n", "--no-clear", dest="no_clear", action='store_true')
-        parser_obj.add_argument("-p", "--proxy-view", dest="proxy_view", action='store_true')
-        parser_obj.add_argument("-t", "--targets", dest="targets", nargs='+', default=defaults['targets'])
-        parser_obj.set_defaults(verbose=False)
-        parser_obj.add_argument("-lo", "--logger-output", dest="logger_output")
-        parser_obj.add_argument("-lr", "--logger-results", dest="logger_results")
-        parser_obj.add_argument("-gc", "--use-gc", dest="use_gc", action='store_true')
-        parser_obj.set_defaults(no_clear=False)
-        parser_obj.set_defaults(proxy_view=False)
-        parser_obj.set_defaults(use_gc=False)
-        parser_obj.set_defaults(logger_output=stderr)
-        parser_obj.set_defaults(logger_results=stderr)
-        return parser_obj
+        parser = ArgumentParser()
+        parser.add_argument('threads', nargs='?', default=defaults['threads'])
+        parser.add_argument("-n", "--no-clear", dest="no_clear", action='store_true')
+        parser.add_argument("-p", "--proxy-view", dest="proxy_view", action='store_true')
+        parser.add_argument("-t", "--targets", dest="targets", nargs='+', default=defaults['targets'])
+        parser.add_argument("-lo", "--logger-output", dest="logger_output")
+        parser.add_argument("-lr", "--logger-results", dest="logger_results")
+        parser.add_argument("-gc", "--use-gc", dest="use_gc", action='store_true')
+        parser.set_defaults(no_clear=False)
+        parser.set_defaults(proxy_view=False)
+        parser.set_defaults(use_gc=False)
+        parser.set_defaults(logger_output=stderr)
+        parser.set_defaults(logger_results=stderr)
+        args, _ = parser.parse_known_args()
+        return args
 
     @staticmethod
     def init_scraper():
