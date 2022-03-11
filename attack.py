@@ -25,7 +25,6 @@ work_statistic = True
 general_statistics = [0, 0]
 threads_count = 0
 thread_count = 0
-attack_func = False
 
 
 class FuckYouRussianShip:
@@ -249,7 +248,6 @@ if __name__ == '__main__':
             attacker.clear()
 
         thread_count = attacker.threads
-        attack_func = attacker.mainth
         Thread(target=attacker.cleaner, daemon=True).start()
         Thread(target=attacker.print_statistic, daemon=True).start()
 
