@@ -41,9 +41,6 @@ class FuckYouRussianShip:
     HOSTS = []
     HOSTS_URL = 'https://hutin-puy.nadom.app/hosts.json'
     MAX_REQUESTS = 5000
-    SUPPORTED_PLATFORMS = {
-        'linux': 'Linux'
-    }
 
     def __init__(self):
         disable_warnings()
