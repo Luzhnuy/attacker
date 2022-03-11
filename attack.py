@@ -1,30 +1,22 @@
 # -*- coding: utf-8 -*-
-import json
-import os
-import platform
-# import requests
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from gc import collect
+from loguru import logger
 from os import system
+from pyuseragents import random as random_useragent
 from random import choice
+from requests.exceptions import ConnectionError
 from sys import stderr
 from threading import Thread
 from time import sleep
 from urllib.parse import unquote
-import tableprint as tp
-
-import cloudscraper
-from loguru import logger
-from pyuseragents import random as random_useragent
-from requests.exceptions import ConnectionError
 from urllib3 import disable_warnings
-import subprocess
-# from shutil import which
-
-# Garbage collector
+import cloudscraper
+import json
+import os
+import platform
 import requests
-import gc
+import tableprint
 
 # from pympler.tracker import SummaryTracker
 
@@ -47,7 +39,6 @@ class FuckYouRussianShip:
         self.args = self.parse_arguments()
         self.no_clear = self.args.no_clear
         self.proxy_view = self.args.proxy_view
-        self.use_gc = self.args.use_gc
         self.targets = self.args.targets
         self.threads = int(self.args.threads)
         self.HOSTS = json.loads(requests.get(self.HOSTS_URL).content)
@@ -57,8 +48,6 @@ class FuckYouRussianShip:
 
         if self.proxy_view:
             work_statistic = False
-        if self.use_gc:
-            gc.enable()
 
     @staticmethod
     def clear():
@@ -81,10 +70,8 @@ class FuckYouRussianShip:
         parser.add_argument("-t", "--targets", dest="targets", nargs='+', default=defaults['targets'])
         parser.add_argument("-lo", "--logger-output", dest="logger_output")
         parser.add_argument("-lr", "--logger-results", dest="logger_results")
-        parser.add_argument("-gc", "--use-gc", dest="use_gc", action='store_true')
         parser.set_defaults(no_clear=False)
         parser.set_defaults(proxy_view=False)
-        parser.set_defaults(use_gc=False)
         parser.set_defaults(logger_output=stderr)
         parser.set_defaults(logger_results=stderr)
         args, _ = parser.parse_known_args()
@@ -210,7 +197,6 @@ class FuckYouRussianShip:
 
             if not self.no_clear:
                 self.clear()
-            collect()
 
     @staticmethod
     def print_statistic():
@@ -235,9 +221,12 @@ class FuckYouRussianShip:
                     'Errors',
                     general_statistics[1]
                 ])
-                tp.table(data=statistic_data,
-                         headers=headers,
-                         width=[len(max(list(statistic.keys()), key=len)), 10, 10, 10, 10, 10, 8])
+                tableprint.table(
+                    data=statistic_data,
+                    headers=headers,
+                    width=[len(max(list(statistic.keys()), key=len)), 10, 10,
+                           10, 10, 10, 8]
+                )
             sleep(5)
             FuckYouRussianShip.clear()
 
