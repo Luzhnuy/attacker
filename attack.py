@@ -245,13 +245,6 @@ class FuckYouRussianShip:
             sleep(5)
             FuckYouRussianShip.clear()
 
-    def parts_recursive(self, n, parts=None):
-        if parts is None:
-            parts = []
-
-        return parts + [n] if n < 500 else self.parts_recursive(n - 500, parts + [500, ])
-
-
 def attacker_threading(threads_count, worker_func):
     with ThreadPoolExecutor(max_workers=threads_count) as executor:
         future_tasks = [executor.submit(worker_func) for _ in range(threads_count)]
@@ -262,19 +255,6 @@ def attacker_threading(threads_count, worker_func):
                     break
                 except Exception:
                     sleep(5)
-
-
-def generation_process(part, terminal_add):
-    if platform.system() == "Linux":
-        subprocess.call(f'xterm -e python attack.py {part} {terminal_add} &', shell=True)
-    else:
-        subprocess.call(f'start python attack.py {part} {terminal_add}', shell=True)
-
-
-def start_multi_terminals(parts_list, terminal_add, f_part, func_att):
-    for part in parts_list:
-        generation_process(part, terminal_add)
-    attacker_threading(f_part, func_att)
 
 
 if __name__ == '__main__':
@@ -288,21 +268,4 @@ if __name__ == '__main__':
         Thread(target=attacker.cleaner, daemon=True).start()
         Thread(target=attacker.print_statistic, daemon=True).start()
 
-        if attacker.threads <= 500:
-            attacker_threading(attacker.threads, attacker.mainth)
-        else:
-            process_count = attacker.threads // 500
-            parts = attacker.parts_recursive(attacker.threads)
-            first_part = parts[0]
-            del parts[0]
-
-            terminal_additional = ''
-
-            if attacker.no_clear:
-                terminal_additional += "-n "
-            if attacker.proxy_view:
-                terminal_additional += "-p "
-            if attacker.targets:
-                terminal_additional += f"-t {' '.join(attacker.targets)} "
-
-            start_multi_terminals(parts, terminal_additional, first_part, attacker.mainth)
+        attacker_threading(attacker.threads, attacker.mainth)
