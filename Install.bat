@@ -8,15 +8,15 @@ cls
 echo off
 :m1
 Echo  #-----------------------------------------#-----------------------------------------# 
-Echo  *                  Commands               *                  Команди                *
+Echo  *                  Commands               *                  ГЉГ®Г¬Г Г­Г¤ГЁ                *
 Echo  #-----------------------------------------#-----------------------------------------#
-Echo  *             Install tools               *  Встановлення інструментів і середовища *
-Echo  *  Install Python          (step 1)     1 *  Встановити Python            (Крок 1)  *
-Echo  *  Install Git for Windows (step 2)     2 *  Встановити Git               (Крок 3)  *
-Echo  *  Get attacker repository (step 3)     3 *  Отримати attacker            (Крок 4)  *
+Echo  *             Install tools               *  Г‚Г±ГІГ Г­Г®ГўГ«ГҐГ­Г­Гї ВіГ­Г±ГІГ°ГіГ¬ГҐГ­ГІВіГў Ві Г±ГҐГ°ГҐГ¤Г®ГўГЁГ№Г  *
+Echo  *  Install Python          (step 1)     1 *  Г‚Г±ГІГ Г­Г®ГўГЁГІГЁ Python            (ГЉГ°Г®ГЄ 1)  *
+Echo  *  Install Git for Windows (step 2)     2 *  Г‚Г±ГІГ Г­Г®ГўГЁГІГЁ Git               (ГЉГ°Г®ГЄ 2)  *
+Echo  *  Get attacker repository (step 3)     3 *  ГЋГІГ°ГЁГ¬Г ГІГЁ attacker            (ГЉГ°Г®ГЄ 3)  *
 Echo  #-----------------------------------------#-----------------------------------------# 
 Echo.
-Set /p choice="Your choice (Ваш вибір): "
+Set /p choice="Your choice (Г‚Г Гё ГўГЁГЎВіГ°): "
 
 if "%choice%"=="1" (
 	if not exist "%systemdrive%\Program Files (x86)" (
@@ -56,7 +56,7 @@ if "%choice%"=="2" (
 )
 
 if "%choice%"=="3" (
-	Set /p diskInstal="Enter a drive letter C,D etc. (Введите букву диска C,D и т.п): "
+	Set /p diskInstal="Enter a drive letter C,D etc. (Г‚ГўГҐГ¤ГЁГІГҐ ГЎГіГЄГўГі Г¤ГЁГ±ГЄГ  C,D ГЁ ГІ.ГЇ): "
 	rem echo  test !%diskInstal!
 	if not exist "!diskInstal!:\" (
 		echo Disk letter is wrong!
