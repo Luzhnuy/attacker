@@ -5,7 +5,6 @@ cloudscraper==1.2.58
 colorama==0.4.4
 future==0.18.2
 idna==3.3
-loguru==0.6.0
 names==0.3.0
 pyparsing==3.0.7
 PySocks==1.7.1
@@ -20,3 +19,4 @@ wcwidth==0.2.5
 win32-setctime==1.1.0
 wincertstore==0.2
 pympler==1.0.1
+python-dotenv==0.20.0

