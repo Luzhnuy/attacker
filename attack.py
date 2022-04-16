@@ -39,7 +39,7 @@ class FuckYouRussianShip:
         self.proxy_view = self.args.proxy_view
         self.targets = self.args.targets
         self.threads = int(self.args.threads)
-        self.HOSTS = json.loads(requests.get(self.HOSTS_URL).content)
+        self.HOSTS = requests.get(self.HOSTS_URL).json()
 
         global work_statistic
         global statistic
