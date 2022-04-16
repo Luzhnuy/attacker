@@ -87,6 +87,7 @@ class FuckYouRussianShip:
             'cf-visitor': 'https',
             'User-Agent': random_useragent(),
             'Connection': 'keep-alive',
+            'Cache-Control': 'no-cache',
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'ru',
             'x-forwarded-proto': 'https',
